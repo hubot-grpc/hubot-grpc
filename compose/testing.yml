@@ -1,0 +1,15 @@
+version: '2'
+services:
+  testing:
+    image: apibricks/ansiblegroup-test-grpc-api
+  hubottesting:
+    build:
+      context: ../hubot
+    environment:
+      - API_HOST=server
+      - API_PORT=50051
+    links:
+      - testing:server
+    volumes_from:
+      - testing
+    entrypoint: ["/bin/sh", "-c", "mocha --compilers coffee:coffee-script/register test/ansiblegroup-test-grpc-api.spec.coffee"]

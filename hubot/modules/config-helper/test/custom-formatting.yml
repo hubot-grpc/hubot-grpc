@@ -1,0 +1,7 @@
+allow_default_calls: false
+
+procedure_options:
+  - procedure: .pkg.test.first
+    response_templates:
+      - "{{response.first}}{{#each response.second}}\n  - {{this}}{{/each}}"
+      - "Hallo {{user.name}}: {{response.first}}"

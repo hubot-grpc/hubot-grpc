@@ -1,0 +1,14 @@
+{
+  "name": "config-helper",
+  "version": "0.0.1",
+  "dependencies": [
+    "js-yaml",
+    "handlebars"
+  ],
+  "devDependencies": [
+    "chai"
+  ],
+  "scripts": {
+    "test": "mocha"
+  }
+}

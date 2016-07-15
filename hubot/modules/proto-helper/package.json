@@ -1,0 +1,13 @@
+{
+  "name": "proto-helper",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
+  },
+  "dependencies": {
+    "protobufjs": "^5.0.1"
+  }
+}

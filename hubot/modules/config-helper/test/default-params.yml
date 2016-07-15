@@ -1,0 +1,10 @@
+procedure_options:
+  - procedure: .pkg.test.second
+    defaults:
+      first: { "text": "first" }
+  - procedure: .pkg.test.fourth
+    defaults:
+      integers:
+        - 1
+        - 2
+        - 3

@@ -1,0 +1,4 @@
+procedure_options:
+  - procedure: .pkg.test.first
+    allowed_users:
+      - max

@@ -1,0 +1,15 @@
+version: '2'
+services:
+  cheftest:
+    image: apibricks/chefgroup-test-grpc-api
+  hubotcheftest:
+    build:
+      context: ../hubot
+    environment:
+      - API_HOST=server
+      - API_PORT=8181
+    links:
+      - cheftest:server
+    volumes_from:
+      - cheftest
+    entrypoint: ["/bin/sh", "-c", "mocha --compilers coffee:coffee-script/register test/chefgroup-test-grpc-api.spec.coffee"]

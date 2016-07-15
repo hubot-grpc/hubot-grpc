@@ -1,0 +1,11 @@
+allow_default_calls: false
+
+procedure_options:
+  - procedure: .pkg.test.first
+    alias: "first"
+  - procedure: .pkg.test.second
+    alias: "do second"
+  - procedure: .pkg.test.third
+    help: "Calls third and returns nothing"
+    alias: "third"
+    allow_default_call: true

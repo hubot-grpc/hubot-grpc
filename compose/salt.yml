@@ -1,0 +1,15 @@
+version: '2'
+services:
+  salttest:
+    image: apibricks/saltgroup-test-grpc-api
+  hubotsalttest:
+    build:
+      context: ../hubot
+    environment:
+      - API_HOST=server
+      - API_PORT=50001
+    links:
+      - salttest:server
+    volumes_from:
+      - salttest
+    entrypoint: ["/bin/sh", "-c", "mocha --compilers coffee:coffee-script/register test/saltgroup-test-grpc-api.spec.coffee"]

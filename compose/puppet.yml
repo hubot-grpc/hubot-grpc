@@ -1,0 +1,15 @@
+version: '2'
+services:
+  puppettest:
+    image: apibricks/puppetgroup-test-grpc-api
+  hubotpuppettest:
+    build:
+      context: ../hubot
+    environment:
+      - API_HOST=server
+      - API_PORT=50053
+    links:
+      - puppettest:server
+    volumes_from:
+      - puppettest
+    entrypoint: ["/bin/sh", "-c", "mocha --compilers coffee:coffee-script/register test/puppetgroup-test-grpc-api.spec.coffee"]

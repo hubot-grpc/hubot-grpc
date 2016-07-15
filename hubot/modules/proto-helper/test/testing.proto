@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package pkg;
+
+message Empty {
+
+}
+
+message Test {
+  repeated int32 integers = 1;
+}
+
+message Complex {
+  message Simple {
+    string text = 1;
+  }
+
+  Simple first = 1;
+  Simple second = 2;
+}
+
+message Status {
+  enum Some {
+    A =
+      0;
+    B = 1;
+    C = 2;
+    D = 3;
+  }
+  Some value = 1;
+}
+
+message SimpleMap {
+  map<string, Complex.Simple> items = 1;
+}
+
+service test {
+  rpc first  (Empty)          returns (Empty) {}
+  rpc second (Complex)        returns (Empty) {}
+  rpc third  (Complex.Simple) returns (Empty) {}
+  rpc forth  (Test)           returns (Empty) {}
+  rpc fifth  (Status)         returns (Empty) {}
+}

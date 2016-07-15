@@ -1,0 +1,3 @@
+[submodule "grpc-services/testing-grpc"]
+	path = grpc-services/testing-grpc
+	url = https://github.com/hubot-grpc/testing-grpc.git

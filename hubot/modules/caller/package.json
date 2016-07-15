@@ -1,0 +1,8 @@
+{
+  "name": "caller",
+  "version": "0.0.1",
+  "dependencies": {
+    "grpc": "^0.14.1",
+    "hashmap": "^2.0.6"
+  }
+}

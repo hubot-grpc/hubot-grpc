@@ -1,0 +1,16 @@
+allow_default_calls: false
+
+procedure_options:
+  - procedure: .nested.testing.test.nonStreamingEmptyResComplex
+    help: "Calls some Function and returns bla"
+    allow_default_call: false
+    alias: "test"
+    respond_privately: true
+    allowed_users:
+      - matthias
+      - jomaguma
+    response_templates:
+      - "{{response}} {{user.id}} {{user.name}}"
+    defaults:
+      first: { text: "bla" }
+      third: { text: ["bluibb"] }
