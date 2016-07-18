@@ -10,12 +10,13 @@
 # Author:
 #   <github username of the original script author>
 
-yaml          = require 'js-yaml'
-callParser    = require '../modules/parsers/call'
-paramParser   = require '../modules/parsers/params'
-Caller        = require '../modules/caller/caller'
-ProtoHelper   = require '../modules/proto-helper/proto-helper'
-ConfigHelper  = require '../modules/config-helper/config-helper'
+yaml              = require 'js-yaml'
+callParser        = require '../modules/parsers/call'
+paramParser       = require '../modules/parsers/params'
+Caller            = require '../modules/caller/caller'
+ProtoHelper       = require '../modules/proto-helper/proto-helper'
+ConfigHelper      = require '../modules/config-helper/config-helper'
+UrlParamsResolver = require '../modules/url-params-resolver/url-params-resolver'
 
 protopath     = '/api/main.proto'
 configpath    = '/api/config.yml'
@@ -38,18 +39,21 @@ makeCall = (response, normalizedCall) ->
       fqn: normalizedCall.fqn,
       request: normalizedCall.parameters
     })
-    try
-      # Randomly choose on of the available response templates from the confighelper
-      responseTemplate = response.random configHelper.getResponseTemplates(normalizedCall.fqn)
-      stream = caller.call(normalizedCall,
-        # render the response using the template
-        (res) -> response.send responseTemplate({response: res, user: response.message.user})
-      , (err) -> response.send yaml.safeDump err.message
-      )
-      if stream.clientStream
-        response.send "You just started a stream to the server with id #{stream.id}"
-    catch err
-      response.send(err.message)
+    # Randomly choose on of the available response templates from the confighelper
+    responseTemplate = response.random configHelper.getResponseTemplates(normalizedCall.fqn)
+
+    UrlParamsResolver.resolveUrlParamsToBuffer(normalizedCall.parameters).then(() ->
+      try
+        stream = caller.call(normalizedCall,
+          # render the response using the template
+          (res) -> response.send responseTemplate({response: res, user: response.message.user})
+        , (err) -> response.send yaml.safeDump err.message
+        )
+        if stream.clientStream
+          response.send "You just started a stream to the server with id #{stream.id}"
+      catch err
+        response.send err.message
+    )
   catch err
     response.send err.message
 

@@ -1,0 +1,13 @@
+{
+  "name": "url-params-resolver",
+  "version": "0.0.1",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "nock": "^8.0.0"
+  },
+  "dependencies": {},
+  "scripts": {
+    "test": "mocha"
+  }
+}
