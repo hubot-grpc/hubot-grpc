@@ -378,6 +378,27 @@ describe 'ansiblegroup-test-grpc-api', ->
           "112,110,103,34,44,32,34,116,105,116,108,101,34,58,32,34,83,104,101,101,112,108,101,34,44,32,34,100,97,121,34,58,32,34,49,53,34,125]}}"]
       ]
 
+  context 'scalarValuesRequest(AllScalarValues) for an invalid url as bytesValue', ->
+    beforeEach ->
+      co =>
+        yield @room.user.say 'user', '@hubot call iaas.fapra.testing.test.scalarValuesRequest ' +
+            'doubleValue: 156.12 floatValue: 1681.51 int32Value: 484 int64Value: 456 ' +
+            'uint32Value: 899 uint64Value: 775 sint32Value: 455 sint64Value: 796 fixed32Value: 646 ' +
+            'fixed64Value: 899 sfixed32Value: 811 sfixed64Value: 912 boolValue: true stringValue: "test" ' +
+            'bytesValue: url"thisisnotavalidurl"'
+        # Wait for hubot to respond
+        yield delay(defaultDelayTime)
+
+    it 'returns the correct error message', ->
+      expect(@room.messages).to.eql [
+        ['user', '@hubot call iaas.fapra.testing.test.scalarValuesRequest ' +
+          'doubleValue: 156.12 floatValue: 1681.51 int32Value: 484 int64Value: 456 ' +
+          'uint32Value: 899 uint64Value: 775 sint32Value: 455 sint64Value: 796 fixed32Value: 646 ' +
+          'fixed64Value: 899 sfixed32Value: 811 sfixed64Value: 912 boolValue: true stringValue: "test" ' +
+          'bytesValue: url"thisisnotavalidurl"']
+        ['hubot', "Provided URL \"thisisnotavalidurl\" for field \"bytesValue\" is not a valid URL."]
+      ]
+
   context 'scalarValuesResponse(Empty)', ->
     beforeEach ->
       co =>

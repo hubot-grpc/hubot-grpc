@@ -8,6 +8,7 @@
     "chai": "^3.5.0"
   },
   "dependencies": {
-    "protobufjs": "^5.0.1"
+    "protobufjs": "^5.0.1",
+    "valid-url": "^1.0.9"
   }
 }

@@ -1,4 +1,6 @@
 const ProtoBuf = require('protobufjs');
+const url = require('url');
+const validUrl = require('valid-url');
 
 module.exports = class ProtoHelper {
   constructor(builder) {
@@ -119,6 +121,10 @@ module.exports = class ProtoHelper {
             // Check if the type matches
             if (!this.types[field.type.name](providedField)) {
               throw new Error(`Provided field "${field.name}" of "${messageFqn}" must be of type ${field.type.name} but found ${typeof providedField}.`);
+            }
+            // if we have a bytes field provided by an url, check if the url is valid
+            if (field.type.name === "bytes" && providedField && providedField instanceof url.Url && !validUrl.isUri(providedField.href)) {
+              throw new Error(`Provided URL "${providedField.href}" for field "${field.name}" is not a valid URL.`)
             }
           } else {
             // This is something we didn't yet thought of.. Might be Maps or different things
