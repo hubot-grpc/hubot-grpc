@@ -18,7 +18,7 @@ WORKDIR /home/hubot
 RUN yo hubot --name="grpcbot" --defaults
 
 # Install all dependencies as one command to work around limitations on aufs
-RUN npm install protobufjs js-yaml hubot-slack grpc hashmap handlebars co chai hubot-test-helper --save
+RUN npm install valid-url protobufjs js-yaml hubot-slack grpc hashmap handlebars co chai hubot-test-helper --save
 
 # Modules
 COPY modules modules
