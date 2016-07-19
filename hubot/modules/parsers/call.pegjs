@@ -5,6 +5,8 @@
  * Accepts expressions namespace.cool_service.method parm1:"meh" param2:123 param3:true
  */
 {
+    const url = require('url');
+
     function flatten(a) {
         if (a instanceof Array) {
             var result = "";
@@ -43,7 +45,7 @@ Parameter
     return {'name': parameter, 'value': value}
   }
 
-ParameterValue = String / Bytestring / Boolean  / Float / Integer / List / Dict
+ParameterValue = String / Bytestring / Url / Boolean  / Float / Integer / List / Dict
 Integer "integer"
   = [-+]?[0-9]+ { return parseInt(text(), 10); }
 Float "float"
@@ -67,6 +69,24 @@ Dict "dictionary"
 alpha = [a-zA-Z]
 alphanum = [a-zA-Z0-9_]
 hexdigit = [0-9a-fA-F]
+Url =
+        (
+            'url"'
+            s:(
+                (
+                    '\\'
+                    e:escseq
+                    {
+                        return e;
+                    }
+                )
+            /   [^\\"]
+            )*
+            '"'
+        )
+        {
+            return url.parse(flatten(s));
+        }
 Bytestring =
         (
             'b"'

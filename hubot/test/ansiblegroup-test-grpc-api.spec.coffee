@@ -331,7 +331,72 @@ describe 'ansiblegroup-test-grpc-api', ->
           'uint32Value: 899 uint64Value: 775 sint32Value: 455 sint64Value: 796 fixed32Value: 646 ' +
           'fixed64Value: 899 sfixed32Value: 811 sfixed64Value: 912 boolValue: true stringValue: "test" ' +
           'bytesValue: b"This is a byte array"']
-        ['hubot', "text: >-\n  {\"doubleValue\":156.12,\"floatValue\":1681.510009765625,\"int32Value\":484,\"int64Value\":\"456\",\"uint32Value\":899,\"uint64Value\":\"775\",\"sint32Value\":455,\"sint64Value\":\"796\",\"fixed32Value\":646,\"fixed64Value\":\"899\",\"sfixed32Value\":811,\"sfixed64Value\":\"912\",\"boolValue\":true,\"stringValue\":\"test\",\"bytesValue\":{\"type\":\"Buffer\",\"data\":[84,104,105,115,32,105,115,32,97,32,98,121,116,101,32,97,114,114,97,121]}}"]
+        ['hubot', "text: >-\n  {\"doubleValue\":156.12,\"floatValue\":1681.510009765625,\"int32Value\":484,\"int64Value\":\"456\"," +
+          "\"uint32Value\":899,\"uint64Value\":\"775\",\"sint32Value\":455,\"sint64Value\":\"796\",\"fixed32Value\":646," +
+          "\"fixed64Value\":\"899\",\"sfixed32Value\":811,\"sfixed64Value\":\"912\",\"boolValue\":true,\"stringValue\":\"test\"," +
+          "\"bytesValue\":{\"type\":\"Buffer\",\"data\":[84,104,105,115,32,105,115,32,97,32,98,121,116,101,32,97,114,114,97,121]}}"]
+      ]
+
+  context 'scalarValuesRequest(AllScalarValues) for an url as bytesValue', ->
+    beforeEach ->
+      co =>
+        yield @room.user.say 'user', '@hubot call iaas.fapra.testing.test.scalarValuesRequest ' +
+            'doubleValue: 156.12 floatValue: 1681.51 int32Value: 484 int64Value: 456 ' +
+            'uint32Value: 899 uint64Value: 775 sint32Value: 455 sint64Value: 796 fixed32Value: 646 ' +
+            'fixed64Value: 899 sfixed32Value: 811 sfixed64Value: 912 boolValue: true stringValue: "test" ' +
+            'bytesValue: url"http://xkcd.com/610/info.0.json"'
+        # Wait for hubot to respond
+        yield delay(defaultDelayTime)
+
+    it 'returns the correct object', ->
+      expect(@room.messages).to.eql [
+        ['user', '@hubot call iaas.fapra.testing.test.scalarValuesRequest ' +
+          'doubleValue: 156.12 floatValue: 1681.51 int32Value: 484 int64Value: 456 ' +
+          'uint32Value: 899 uint64Value: 775 sint32Value: 455 sint64Value: 796 fixed32Value: 646 ' +
+          'fixed64Value: 899 sfixed32Value: 811 sfixed64Value: 912 boolValue: true stringValue: "test" ' +
+          'bytesValue: url"http://xkcd.com/610/info.0.json"']
+        ['hubot', "text: >-\n  {\"doubleValue\":156.12,\"floatValue\":1681.510009765625,\"int32Value\":484,\"int64Value\":\"456\"," +
+          "\"uint32Value\":899,\"uint64Value\":\"775\",\"sint32Value\":455,\"sint64Value\":\"796\",\"fixed32Value\":646," +
+          "\"fixed64Value\":\"899\",\"sfixed32Value\":811,\"sfixed64Value\":\"912\",\"boolValue\":true,\"stringValue\":\"test\"," +
+          "\"bytesValue\":{\"type\":\"Buffer\",\"data\":[123,34,109,111,110,116,104,34,58,32,34,55,34,44,32,34,110,117,109,34,58,32,54,49," +
+          "48,44,32,34,108,105,110,107,34,58,32,34,34,44,32,34,121,101,97,114,34,58,32,34,50,48,48,57,34,44,32,34,110,101,119,115,34,58,32," +
+          "34,34,44,32,34,115,97,102,101,95,116,105,116,108,101,34,58,32,34,83,104,101,101,112,108,101,34,44,32,34,116,114,97,110,115,99,114," +
+          "105,112,116,34,58,32,34,40,40,65,32,116,104,111,117,103,104,116,32,98,117,98,98,108,101,32,105,115,32,115,104,97,114,101,100,32,98," +
+          "101,116,119,101,101,110,32,116,104,101,32,102,105,118,101,32,111,99,99,117,112,97,110,116,115,32,111,102,32,97,32,115,117,98,119,97," +
+          "121,32,99,97,114,46,41,41,92,110,65,108,108,58,32,76,111,111,107,32,97,116,32,116,104,101,115,101,32,112,101,111,112,108,101,46,32,71," +
+          "108,97,115,115,121,45,101,121,101,100,32,97,117,116,111,109,97,116,111,110,115,32,103,111,105,110,103,32,97,98,111,117,116,32,116,104," +
+          "101,105,114,32,100,97,105,108,121,32,108,105,118,101,115,44,32,110,101,118,101,114,32,115,116,111,112,112,105,110,103,32,116,111,32,108," +
+          "111,111,107,32,97,114,111,117,110,100,32,97,110,100,32,92,110,116,104,105,110,107,33,92,110,32,32,73,39,109,32,116,104,101,32,111,110,108," +
+          "121,32,99,111,110,115,99,105,111,117,115,32,104,117,109,97,110,32,105,110,32,97,32,119,111,114,108,100,32,111,102,32,115,104,101,101,112," +
+          "46,92,110,92,110,123,123,84,105,116,108,101,32,116,101,120,116,58,32,72,101,121,44,32,119,104,97,116,32,97,114,101,32,116,104,101,32,111," +
+          "100,100,115,32,45,45,32,102,105,118,101,32,65,121,110,32,82,97,110,100,32,102,97,110,115,32,111,110,32,116,104,101,32,115,97,109,101,32,116," +
+          "114,97,105,110,33,32,32,77,117,115,116,32,98,101,32,103,111,105,110,103,32,116,111,32,97,32,99,111,110,118,101,110,116,105,111,110,46,125,125," +
+          "34,44,32,34,97,108,116,34,58,32,34,72,101,121,44,32,119,104,97,116,32,97,114,101,32,116,104,101,32,111,100,100,115,32,45,45,32,102,105,118," +
+          "101,32,65,121,110,32,82,97,110,100,32,102,97,110,115,32,111,110,32,116,104,101,32,115,97,109,101,32,116,114,97,105,110,33,32,32,77,117,115," +
+          "116,32,98,101,32,103,111,105,110,103,32,116,111,32,97,32,99,111,110,118,101,110,116,105,111,110,46,34,44,32,34,105,109,103,34,58,32,34,104," +
+          "116,116,112,58,92,47,92,47,105,109,103,115,46,120,107,99,100,46,99,111,109,92,47,99,111,109,105,99,115,92,47,115,104,101,101,112,108,101,46," +
+          "112,110,103,34,44,32,34,116,105,116,108,101,34,58,32,34,83,104,101,101,112,108,101,34,44,32,34,100,97,121,34,58,32,34,49,53,34,125]}}"]
+      ]
+
+  context 'scalarValuesRequest(AllScalarValues) for an invalid url as bytesValue', ->
+    beforeEach ->
+      co =>
+        yield @room.user.say 'user', '@hubot call iaas.fapra.testing.test.scalarValuesRequest ' +
+            'doubleValue: 156.12 floatValue: 1681.51 int32Value: 484 int64Value: 456 ' +
+            'uint32Value: 899 uint64Value: 775 sint32Value: 455 sint64Value: 796 fixed32Value: 646 ' +
+            'fixed64Value: 899 sfixed32Value: 811 sfixed64Value: 912 boolValue: true stringValue: "test" ' +
+            'bytesValue: url"thisisnotavalidurl"'
+        # Wait for hubot to respond
+        yield delay(defaultDelayTime)
+
+    it 'returns the correct error message', ->
+      expect(@room.messages).to.eql [
+        ['user', '@hubot call iaas.fapra.testing.test.scalarValuesRequest ' +
+          'doubleValue: 156.12 floatValue: 1681.51 int32Value: 484 int64Value: 456 ' +
+          'uint32Value: 899 uint64Value: 775 sint32Value: 455 sint64Value: 796 fixed32Value: 646 ' +
+          'fixed64Value: 899 sfixed32Value: 811 sfixed64Value: 912 boolValue: true stringValue: "test" ' +
+          'bytesValue: url"thisisnotavalidurl"']
+        ['hubot', "Provided URL \"thisisnotavalidurl\" for field \"bytesValue\" is not a valid URL."]
       ]
 
   context 'scalarValuesResponse(Empty)', ->
@@ -344,7 +409,10 @@ describe 'ansiblegroup-test-grpc-api', ->
     it 'returns the correct object', ->
       expect(@room.messages).to.eql [
         ['user', '@hubot call iaas.fapra.testing.test.scalarValuesResponse']
-        ['hubot', "doubleValue: 2147483648.5\nfloatValue: 123.45600128173828\nint32Value: 123\nint64Value: '9223372036854775807'\nuint32Value: 123\nuint64Value: '9223372036854775807'\nsint32Value: 123\nsint64Value: '9223372036854775807'\nfixed32Value: 123\nfixed64Value: '9223372036854775807'\nsfixed32Value: 123\nsfixed64Value: '9223372036854775807'\nboolValue: true\nstringValue: some text\nbytesValue: !<tag:yaml.org,2002:binary> thesearebyte"]
+        ['hubot', "doubleValue: 2147483648.5\nfloatValue: 123.45600128173828\nint32Value: 123\nint64Value: '9223372036854775807'\n" +
+          "uint32Value: 123\nuint64Value: '9223372036854775807'\nsint32Value: 123\nsint64Value: '9223372036854775807'\nfixed32Value: 123\n" +
+          "fixed64Value: '9223372036854775807'\nsfixed32Value: 123\nsfixed64Value: '9223372036854775807'\nboolValue: true\nstringValue: some text\n" +
+          "bytesValue: !<tag:yaml.org,2002:binary> thesearebyte"]
       ]
 
   context 'importedRequest(External)', ->

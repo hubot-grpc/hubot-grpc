@@ -38,3 +38,6 @@ jspm_packages
 
 # ENV file for docker compose
 compose/env/*
+
+# JetBrains IDE
+.idea
