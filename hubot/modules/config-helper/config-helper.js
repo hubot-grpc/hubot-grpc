@@ -70,22 +70,23 @@ module.exports = class ConfigHelper {
     });
   }
 
-  getAliases() {
-    let aliases = [];
+  getCustomCalls() {
+    let customCalls = [];
     this.methods.forEach(method => {
       if (method.alias) {
-        let alias = {
+        let customCall = {
           name: method.alias,
           methodFqn: method.name,
           // this currently allows parameters to be specified directly after the alias
           // (without whitespace) -> might leed to clashes between aliases having a common prefix
           regexp: new RegExp(method.alias + '([\\s\\S]*)', 'i'),
           methodSplit: method.name.replace('.', '').split('.'),
+          defaultParameters: method.defaults,
         };
-        aliases.push(alias);
+        customCalls.push(customCall);
       }
     });
-    return aliases;
+    return customCalls;
   }
 
   findMethodByFqn(methodFqn) {
@@ -115,10 +116,10 @@ module.exports = class ConfigHelper {
     return {};
   }
 
-  applyUserParametersToDefaults(methodFqn, userParameters) {
+  applyUserParametersToDefaults(defaultParameters, userParameters) {
     // Create a deep copy of the object
     // (not sure if this is the best way but its also done by others)
-    let parameters = JSON.parse(JSON.stringify(this.getDefaultParameters(methodFqn)));
+    let parameters = JSON.parse(JSON.stringify(defaultParameters));
     // Override default parameters with user parameters
     for (var key in userParameters) {
       parameters[key] = userParameters[key];

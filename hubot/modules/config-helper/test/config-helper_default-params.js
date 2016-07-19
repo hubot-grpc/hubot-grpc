@@ -24,7 +24,10 @@ describe('Default parameters:', () => {
   describe('No defaults specified', () => {
     it('returns the user parameters', () => {
       let params = { text: 'string' };
-      expect(configHelper.applyUserParametersToDefaults('pkg.test.third', params)).to.eql(params);
+      expect(configHelper.applyUserParametersToDefaults(
+        configHelper.getDefaultParameters('pkg.test.third'),
+        params
+      )).to.eql(params);
     });
   });
 
@@ -37,7 +40,7 @@ describe('Default parameters:', () => {
 
     it('Correctly merges with user parameters', () => {
       expect(configHelper.applyUserParametersToDefaults(
-        '.pkg.test.second',
+        configHelper.getDefaultParameters('.pkg.test.second'),
         { second: { text: 'second' } }
       )).to.eql(
         {
@@ -49,7 +52,7 @@ describe('Default parameters:', () => {
 
     it('Correctly overrides with user parameters', () => {
       expect(configHelper.applyUserParametersToDefaults(
-        '.pkg.test.second',
+        configHelper.getDefaultParameters('.pkg.test.second'),
         {
           first: { text: 'different' },
           second: { text: 'second' },
@@ -71,14 +74,17 @@ describe('Default parameters:', () => {
     });
 
     it('Correctly applies the default parameters', () => {
-      expect(configHelper.applyUserParametersToDefaults('.pkg.test.fourth', {})).to.eql(
+      expect(configHelper.applyUserParametersToDefaults(
+        configHelper.getDefaultParameters('.pkg.test.fourth'),
+        {}
+      )).to.eql(
         { integers: [1, 2, 3] }
       );
     });
 
     it('Correctly overrides with user parameters', () => {
       expect(configHelper.applyUserParametersToDefaults(
-        '.pkg.test.fourth',
+        configHelper.getDefaultParameters('.pkg.test.fourth'),
         {
           integers: [4, 5, 6],
         }
