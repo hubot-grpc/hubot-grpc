@@ -5,6 +5,8 @@ install:
   - npm install -g mocha
   - npm --prefix ./hubot/modules/proto-helper install ./hubot/modules/proto-helper
   - npm --prefix ./hubot/modules/config-helper install ./hubot/modules/config-helper
+  - npm --prefix ./hubot/modules/url-params-resolver install ./hubot/modules/url-params-resolver
 script:
   - (cd ./hubot/modules/proto-helper && mocha)
   - (cd ./hubot/modules/config-helper && mocha)
+  - (cd ./hubot/modules/url-params-resolver && mocha)
