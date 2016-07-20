@@ -2,10 +2,15 @@ allow_default_calls: false
 
 procedure_options:
   - procedure: .pkg.test.first
-    alias: "first"
+    help: "Default call help"
+    custom_calls:
+      - alias: first
+        help: "Help message for the first alias"
   - procedure: .pkg.test.second
-    alias: "do second"
+    custom_calls:
+      - alias: "do second"
   - procedure: .pkg.test.third
     help: "Calls third and returns nothing"
-    alias: "third"
+    custom_calls:
+      - alias: "third"
     allow_default_call: true

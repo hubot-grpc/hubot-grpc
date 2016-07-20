@@ -32,7 +32,7 @@ makeCall = (response, normalizedCall, defaultParameters) ->
     return
 
   # merge params with default params from config
-  normalizedCall.parameters = configHelper.applyUserParametersToDefaults(defaultParameters, normalizedCall.parameters)
+  normalizedCall.parameters = configHelper.applyParametersToDefaults(defaultParameters, normalizedCall.parameters)
   try
     protoHelper.validateCall({
       fqn: normalizedCall.fqn,
@@ -65,7 +65,7 @@ installCustomCallHandler = (robot, customCall) ->
         fqn: customCall.methodFqn,
         parameters: params,
       }
-      makeCall response, normalizedCall, customCall.defaultParameters
+      makeCall response, normalizedCall, customCall.defaults
     catch err
       response.send "Cannot parse your call (line: #{err.location.start.line}, column: #{err.location.start.column}): #{err.message}"
 

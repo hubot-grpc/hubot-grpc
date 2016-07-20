@@ -3,6 +3,11 @@ procedure_options:
     defaults:
       first: { "text": "first" }
   - procedure: .pkg.test.fourth
+    custom_calls:
+      - alias: "fourth"
+        defaults:
+          integers: [2,3,4]
+      - alias: "default"
     defaults:
       integers:
         - 1

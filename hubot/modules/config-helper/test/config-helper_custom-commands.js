@@ -36,19 +36,19 @@ describe('Customized Commands:', () => {
     });
 
     it('gives the correct first command', () => {
-      expect(commands[0]).to.equal('first');
+      expect(commands[0]).to.equal('call .pkg.test.third <text:string> - Calls third and returns nothing');
     });
 
     it('gives the correct second command', () => {
-      expect(commands[1]).to.equal('do second <first:Simple> <second:Simple>');
+      expect(commands[1]).to.equal('first  - Help message for the first alias');
     });
 
     it('gives the correct third command', () => {
-      expect(commands[2]).to.equal('third <text:string> - Calls third and returns nothing');
+      expect(commands[2]).to.equal('do second <first:Simple> <second:Simple>');
     });
 
     it('gives the correct forth command', () => {
-      expect(commands[3]).to.equal('call .pkg.test.third <text:string> - Calls third and returns nothing');
+      expect(commands[3]).to.equal('third <text:string> - Calls third and returns nothing');
     });
   });
 
