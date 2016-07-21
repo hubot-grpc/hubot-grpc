@@ -57,8 +57,61 @@ services:
 
 ### How to talk to hubot
 
+#### The generic way
+
+With the following syntax you can call any grpc method without any further configuration.
+
+- ```botname call package.service.method parameters```
+
+#### Specifying Parameters
+
+If the request message type would be *Object* defined as follows:
+
+```
+message Simple {
+  string text = 1;
+}
+
+message Object {
+  string param1 = 1;
+  Simple param2 = 2;
+}
+```
+
+the request would look like this:
+
+```
+botname call some.method param1: "plain string" param2: { text: "lorem ipsum"}
+```
+
+So basically all fields of the request message become top level parameters, which in turn can be specified in a JSON-like syntax.
+Fieldnames are however not enclosed in ```"```.
+
+All fields are optional as this is the case in proto3 messages.
+
+#### Calling by applications
+
+You can define additional aliases for creating shorter commands.
+These can be called with ```botname your_alias parameters```, where the parameters are passed the same way as above.
+
 ### Additional configuration through config.yml file
 
+Because the default call syntax can become quite tedious to write in a chat, there are several possibilities to enhance the usability through an optional config file.
+
+This config file is using the Yaml file format and offers the following features:
+
+- Defining shorthand aliases for methods (also multiple aliases are possible per method)
+- Specifying default parameters that are passed on if the user does not override them (different defaults can be specified for different aliases of the same method)
+- Disabling the default call syntax (and thus if no alias is defined, disabling the whole method)
+- Restricting method calls to certain users
+- Providing custom handlebars templates for defining how hubot responds
+- Defining custom help messages that are displayed in the *help* commands (also possible on the level of aliases)
+
+An example config file:
+
+```
+
+```
 
 
 ## Limitations
