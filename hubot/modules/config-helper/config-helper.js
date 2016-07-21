@@ -93,7 +93,7 @@ module.exports = class ConfigHelper {
         // (without whitespace) -> might leed to clashes between aliases having a common prefix
         regexp: new RegExp(customCall.alias + '([\\s\\S]*)', 'i'),
         methodSplit: customCall.method.name.replace('.', '').split('.'),
-        defaultParameters: customCall.defaults,
+        defaults: customCall.defaults,
       };
       customCalls.push(call);
     });

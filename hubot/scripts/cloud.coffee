@@ -65,9 +65,11 @@ installCustomCallHandler = (robot, customCall) ->
         fqn: customCall.methodFqn,
         parameters: params,
       }
+      console.log(customCall)
       makeCall response, normalizedCall, customCall.defaults
     catch err
-      response.send "Cannot parse your call (line: #{err.location.start.line}, column: #{err.location.start.column}): #{err.message}"
+      console.log err
+      #response.send "Cannot parse your call (line: #{err.location.start.line}, column: #{err.location.start.column}): #{err.message}"
 
 
 # Configures the plugin
