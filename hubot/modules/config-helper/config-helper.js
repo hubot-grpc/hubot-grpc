@@ -131,7 +131,6 @@ module.exports = class ConfigHelper {
     // Create a deep copy of the object
     // (not sure if this is the best way but its also done by others)
     defaultParameters = JSON.parse(JSON.stringify(defaultParameters));
-    overrideParameters = JSON.parse(JSON.stringify(overrideParameters));
     // Override default parameters with user parameters
     for (var key in overrideParameters) {
       defaultParameters[key] = overrideParameters[key];
