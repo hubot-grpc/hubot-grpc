@@ -125,7 +125,7 @@ procedure_options:
     defaults:
       offset: 2
     custom_calls:
-      - alias: "go three back"
+      - alias: "three back"
         defaults:
           offset: 3
       - alias: "two back"
