@@ -15,6 +15,7 @@ module.exports = class ConfigHelper {
     this.config = yaml.safeLoad(configyaml) || {};
     this.initConfig(this.config);
 
+    this.customCalls = [];
     this.applyConfigToMethods(methods);
     this.methods = methods;
   }
@@ -42,10 +43,6 @@ module.exports = class ConfigHelper {
           permission = option.allow_default_call;
         }
 
-        if ('alias' in option) {
-          method.alias = option.alias;
-        }
-
         if ('help' in option) {
           method.help = option.help;
         }
@@ -63,6 +60,22 @@ module.exports = class ConfigHelper {
         } else {
           method.defaults = {};
         }
+
+        // this uses other options from the method that should at this point already be set
+        if ('custom_calls' in option) {
+          option.custom_calls.forEach(customCall => {
+            let defaults = customCall.defaults || {};
+            let help = customCall.help || method.help;
+
+            this.customCalls.push({
+              method: method,
+              alias: customCall.alias,
+              defaults: this.applyParametersToDefaults(method.defaults, defaults),
+              help: help,
+            });
+          });
+          method.alias = option.alias;
+        }
       }
 
       method.isDefaultCallAllowed = permission;
@@ -70,22 +83,21 @@ module.exports = class ConfigHelper {
     });
   }
 
-  getAliases() {
-    let aliases = [];
-    this.methods.forEach(method => {
-      if (method.alias) {
-        let alias = {
-          name: method.alias,
-          methodFqn: method.name,
-          // this currently allows parameters to be specified directly after the alias
-          // (without whitespace) -> might leed to clashes between aliases having a common prefix
-          regexp: new RegExp(method.alias + '([\\s\\S]*)', 'i'),
-          methodSplit: method.name.replace('.', '').split('.'),
-        };
-        aliases.push(alias);
-      }
+  getCustomCalls() {
+    let customCalls = [];
+    this.customCalls.forEach(customCall => {
+      let call = {
+        name: customCall.alias,
+        methodFqn: customCall.method.name,
+        // this currently allows parameters to be specified directly after the alias
+        // (without whitespace) -> might leed to clashes between aliases having a common prefix
+        regexp: new RegExp(customCall.alias + '([\\s\\S]*)', 'i'),
+        methodSplit: customCall.method.name.replace('.', '').split('.'),
+        defaults: customCall.defaults,
+      };
+      customCalls.push(call);
     });
-    return aliases;
+    return customCalls;
   }
 
   findMethodByFqn(methodFqn) {
@@ -115,16 +127,17 @@ module.exports = class ConfigHelper {
     return {};
   }
 
-  applyUserParametersToDefaults(methodFqn, userParameters) {
+  applyParametersToDefaults(defaultParameters, overrideParameters) {
     // Create a deep copy of the object
     // (not sure if this is the best way but its also done by others)
-    let parameters = JSON.parse(JSON.stringify(this.getDefaultParameters(methodFqn)));
+    defaultParameters = JSON.parse(JSON.stringify(defaultParameters));
+    overrideParameters = JSON.parse(JSON.stringify(overrideParameters));
     // Override default parameters with user parameters
-    for (var key in userParameters) {
-      parameters[key] = userParameters[key];
+    for (var key in overrideParameters) {
+      defaultParameters[key] = overrideParameters[key];
     }
 
-    return parameters;
+    return defaultParameters;
   }
 
   getResponseTemplates(methodFqn) {
@@ -141,14 +154,6 @@ module.exports = class ConfigHelper {
     let commands = [];
 
     this.methods.forEach(method => {
-
-      // If there is an alias defined: Output command using alias
-      if (method.alias) {
-        // Mighty Template String for alias commands
-        let aliasCommand = `${method.alias} ${method.parameters.map(param =>
-          `<${param.name}:${param.type}${param.repeated ? '[]' : ''}>`).join(' ')}${method.help ? ` - ${method.help}` : ''}`.trim();
-        commands.push(aliasCommand);
-      }
       // If the default call is allowed: Output default command
       if (method.isDefaultCallAllowed) {
         // Mighty Template String for default commands
@@ -156,7 +161,13 @@ module.exports = class ConfigHelper {
           `<${param.name}:${param.type}${param.repeated ? '[]' : ''}>`).join(' ')}${method.help ? ` - ${method.help}` : ''}`.trim();
         commands.push(defaultCommand);
       }
+    });
 
+    this.customCalls.forEach(customCall => {
+      // Mighty Template String for alias commands
+      let aliasCommand = `${customCall.alias} ${customCall.method.parameters.map(param =>
+        `<${param.name}:${param.type}${param.repeated ? '[]' : ''}>`).join(' ')}${customCall.help ? ` - ${customCall.help}` : ''}`.trim();
+      commands.push(aliasCommand);
     });
 
     return commands;

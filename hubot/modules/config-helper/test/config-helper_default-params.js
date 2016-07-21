@@ -24,7 +24,10 @@ describe('Default parameters:', () => {
   describe('No defaults specified', () => {
     it('returns the user parameters', () => {
       let params = { text: 'string' };
-      expect(configHelper.applyUserParametersToDefaults('pkg.test.third', params)).to.eql(params);
+      expect(configHelper.applyParametersToDefaults(
+        configHelper.getDefaultParameters('pkg.test.third'),
+        params
+      )).to.eql(params);
     });
   });
 
@@ -36,8 +39,8 @@ describe('Default parameters:', () => {
     });
 
     it('Correctly merges with user parameters', () => {
-      expect(configHelper.applyUserParametersToDefaults(
-        '.pkg.test.second',
+      expect(configHelper.applyParametersToDefaults(
+        configHelper.getDefaultParameters('.pkg.test.second'),
         { second: { text: 'second' } }
       )).to.eql(
         {
@@ -48,8 +51,8 @@ describe('Default parameters:', () => {
     });
 
     it('Correctly overrides with user parameters', () => {
-      expect(configHelper.applyUserParametersToDefaults(
-        '.pkg.test.second',
+      expect(configHelper.applyParametersToDefaults(
+        configHelper.getDefaultParameters('.pkg.test.second'),
         {
           first: { text: 'different' },
           second: { text: 'second' },
@@ -71,19 +74,38 @@ describe('Default parameters:', () => {
     });
 
     it('Correctly applies the default parameters', () => {
-      expect(configHelper.applyUserParametersToDefaults('.pkg.test.fourth', {})).to.eql(
+      expect(configHelper.applyParametersToDefaults(
+        configHelper.getDefaultParameters('.pkg.test.fourth'),
+        {}
+      )).to.eql(
         { integers: [1, 2, 3] }
       );
     });
 
     it('Correctly overrides with user parameters', () => {
-      expect(configHelper.applyUserParametersToDefaults(
-        '.pkg.test.fourth',
+      expect(configHelper.applyParametersToDefaults(
+        configHelper.getDefaultParameters('.pkg.test.fourth'),
         {
           integers: [4, 5, 6],
         }
       )).to.eql(
         { integers: [4, 5, 6] }
+      );
+    });
+  });
+
+  describe('Custom Calls:', () => {
+    it('Reads out the overwritten parameters', () => {
+      let customCall = configHelper.customCalls.find(call => call.alias === 'fourth');
+      expect(customCall.defaults).to.eql(
+        { integers: [2, 3, 4] }
+      );
+    });
+
+    it('Reads out the inherited default parameters', () => {
+      let customCall = configHelper.customCalls.find(call => call.alias === 'default');
+      expect(customCall.defaults).to.eql(
+        { integers: [1, 2, 3] }
       );
     });
   });

@@ -26,14 +26,14 @@ caller        = new Caller       protopath, host
 protoHelper   = new ProtoHelper  protopath
 configHelper  = new ConfigHelper configpath, protoHelper.getAllMethods()
 
-makeCall = (response, normalizedCall) ->
+makeCall = (response, normalizedCall, defaultParameters) ->
   # Check if the user is allowed to call this method
   if(!configHelper.isUserAllowed(normalizedCall.fqn, response.message.user.name))
     response.send "You are not allowed to do this"
     return
 
   # merge params with default params from config
-  normalizedCall.parameters = configHelper.applyUserParametersToDefaults(normalizedCall.fqn, normalizedCall.parameters)
+  normalizedCall.parameters = configHelper.applyParametersToDefaults(defaultParameters, normalizedCall.parameters)
   try
     protoHelper.validateCall({
       fqn: normalizedCall.fqn,
@@ -57,19 +57,19 @@ makeCall = (response, normalizedCall) ->
   catch err
     response.send err.message
 
-installAliasHandler = (robot, alias) ->
-  robot.respond alias.regexp, (response) ->
+installCustomCallHandler = (robot, customCall) ->
+  robot.respond customCall.regexp, (response) ->
     try
       # try to parse everything contained in the last matching group
       # last matching group, because user could specify an alias containing ()
       # || "" because matching group is null if no parameter is given
       params = paramParser.parse(response.match[response.match.length - 1] || "")
       normalizedCall = {
-        method: alias.methodSplit,
-        fqn: alias.methodFqn,
+        method: customCall.methodSplit,
+        fqn: customCall.methodFqn,
         parameters: params,
       }
-      makeCall response, normalizedCall
+      makeCall response, normalizedCall, customCall.defaults
     catch err
       response.send "Cannot parse your call (line: #{err.location.start.line}, column: #{err.location.start.column}): #{err.message}"
 
@@ -79,11 +79,11 @@ module.exports = (robot) ->
 
   # Add help commands
   for command in configHelper.getCommands()
-    robot.commands.push "*#{robot.name} #{command}*"
+    robot.commands.push "#{robot.name} #{command}"
 
   # Add listeners for custom aliases
-  for alias in configHelper.getAliases()
-    installAliasHandler(robot, alias)
+  for customCall in configHelper.getCustomCalls()
+    installCustomCallHandler(robot, customCall)
 
 
   # Adds a custom listener for dynamically calling grpc services
@@ -91,7 +91,7 @@ module.exports = (robot) ->
     try
       # try to parse everything contained in the matching group
       parsed = callParser.parse(response.match[1])
-      makeCall response, parsed
+      makeCall response, parsed, configHelper.getDefaultParameters(parsed.fqn)
     catch err
       response.send "Cannot parse your call (line: #{err.location.start.line}, column: #{err.location.start.column}): #{err.message}"
 
