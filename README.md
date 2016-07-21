@@ -107,11 +107,55 @@ This config file is using the Yaml file format and offers the following features
 - Providing custom handlebars templates for defining how hubot responds
 - Defining custom help messages that are displayed in the *help* commands (also possible on the level of aliases)
 
-An example config file:
+An example config file for a [XKCD API](https://github.com/hubot-grpc/xkcd-grabber):
 
 ```
+allow_default_calls: true
 
+procedure_options:
+  - procedure: .xkcd.XkcdGrabber.getLatestUrl
+    allow_default_call: false
+    help: "Default call help"
+    custom_calls:
+      - alias: latest
+        help: "get the latest xkcd comic"
+  - procedure: .xkcd.XkcdGrabber.getPreviousUrl
+    defaults:
+      offset: 2
+    custom_calls:
+      - alias: "go three back"
+        defaults:
+          offset: 3
+      - alias: "two back"
+  - procedure: .xkcd.XkcdGrabber.getNextUrl
+    help: "Calls third and returns nothing"
+    custom_calls:
+      - alias: "next"
+  - procedure: .xkcd.XkcdGrabber.getRandomUrl
+    allowed_users:
+      - alice
+      - bob
 ```
 
 
 ## Limitations
+
+- Maps only support string keys
+- there is no elegant solution to set the script up without using the container
+  - there is no npm package for the plugin
+- There is no way to see the status of long running requests (or cancel them)
+- The docker container only supports Slack out of the box
+- Error handling is bad
+  - some catches throw errors themselves and thus give weird error messages
+- The connection to the grpc service is currently only made insecurly
+- Byte data is not nice in chats
+
+
+## Wishlist
+
+- More modular design
+  - Maybe using events in hubot and splitting core functionality and the interfacing with the user up.
+  - Allowing to use plugins for example for pasting byte data onto a file pasting service.
+- Published images/packages on docker hub and npm
+- Integration tests for all advanced features
+- Running the integration tests in travis-ci
