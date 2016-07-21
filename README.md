@@ -21,6 +21,8 @@ After this you should be able to start a container using the image with ```docke
 
 For it to be useful however you should have a grpc service running somewhere (ideally also in a container, see [API bricks specification](https://github.com/apibricks/apibricks-spec)), which needs to be accessible from the hubot container.
 
+Furthermore you need to put the proto file under ```/api/main.proto``` using a docker volume or modifying the dockerfile.
+
 Information on how the bot can connect to the grpc service can be passed on via environment variables.
 
 ### Environment Variables
