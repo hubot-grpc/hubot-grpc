@@ -18,8 +18,8 @@ ProtoHelper       = require '../modules/proto-helper/proto-helper'
 ConfigHelper      = require '../modules/config-helper/config-helper'
 UrlParamsResolver = require '../modules/url-params-resolver/url-params-resolver'
 
-protopath     = '/api/main.proto'
-configpath    = '/api/config.yml'
+protopath     = process.env.API_PROTO_PATH || '/api/main.proto'
+configpath    = process.env.API_CONFIG_PATH || '/api/config.yml'
 host          = process.env.API_HOST + ':' + process.env.API_PORT
 
 caller        = new Caller       protopath, host
