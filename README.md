@@ -151,6 +151,7 @@ procedure_options:
   - some catches throw errors themselves and thus give weird error messages
 - The connection to the grpc service is currently only made insecurly
 - Byte data is not nice in chats
+- Url types and byte buffers cannot be specified as default parameters in the config file 
 
 
 ## Wishlist
